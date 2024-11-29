@@ -89,22 +89,4 @@ class OrderServiceTest {
                       .price(price)
                       .build();
     }
-
-    @Test
-    @DisplayName("")
-    void test() throws Exception {
-        // Given
-        Product product1 = createProduct("인기 한정 상품 1", POPULAR, 15000);
-        productRepository.save(product1);
-
-        Stock stock1 = Stock.create(product1, 10000);
-        Stock savedStock = stockRepository.save(stock1);
-
-        Optional<Stock> byId = stockRepository.findById(savedStock.getId());
-
-        // When
-
-        // Then
-
-    }
 }
