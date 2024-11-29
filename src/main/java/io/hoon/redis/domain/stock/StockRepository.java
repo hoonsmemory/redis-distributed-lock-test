@@ -7,5 +7,6 @@ import java.util.List;
 
 @Repository
 public interface StockRepository extends CrudRepository<Stock, Long> {
-    List<Stock> findAllByProductIdIn(List<Long> productIds);
+    Stock findByProductId(Long productId);
+    List<Stock> findAll();
 }

@@ -1,14 +1,14 @@
 package io.hoon.redis.service.order;
 
 import io.hoon.redis.api.service.order.OrderService;
+import io.hoon.redis.api.service.order.request.OrderCreateServiceRequest;
 import io.hoon.redis.api.service.order.request.ProductPurchase;
+import io.hoon.redis.api.service.order.response.OrderResponse;
 import io.hoon.redis.domain.product.Product;
 import io.hoon.redis.domain.product.ProductRepository;
 import io.hoon.redis.domain.product.ProductType;
 import io.hoon.redis.domain.stock.Stock;
 import io.hoon.redis.domain.stock.StockRepository;
-import io.hoon.redis.api.service.order.request.OrderCreateServiceRequest;
-import io.hoon.redis.api.service.order.response.OrderResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +17,10 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
-import static io.hoon.redis.domain.product.ProductType.*;
+import static io.hoon.redis.domain.product.ProductType.POPULAR;
+import static io.hoon.redis.domain.product.ProductType.REGULAR;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 
@@ -86,5 +88,23 @@ class OrderServiceTest {
                       .type(type)
                       .price(price)
                       .build();
+    }
+
+    @Test
+    @DisplayName("")
+    void test() throws Exception {
+        // Given
+        Product product1 = createProduct("인기 한정 상품 1", POPULAR, 15000);
+        productRepository.save(product1);
+
+        Stock stock1 = Stock.create(product1, 10000);
+        Stock savedStock = stockRepository.save(stock1);
+
+        Optional<Stock> byId = stockRepository.findById(savedStock.getId());
+
+        // When
+
+        // Then
+
     }
 }

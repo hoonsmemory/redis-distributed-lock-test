@@ -1,7 +1,7 @@
 package io.hoon.redis.api.service.stock;
 
-import io.hoon.redis.api.service.order.request.ProductPurchase;
 import io.hoon.redis.api.service.stock.exception.StockInsufficientException;
+import io.hoon.redis.api.service.stock.response.StockResponse;
 import io.hoon.redis.domain.stock.Stock;
 import io.hoon.redis.domain.stock.StockRepository;
 import lombok.RequiredArgsConstructor;
@@ -9,8 +9,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -19,30 +17,29 @@ public class StockService {
     private final StockRepository stockRepository;
 
     @Transactional
-    public void deductStockQuantities(List<ProductPurchase> purchases) {
+    public void deductStockQuantities(long productId, int quantity) {
+
         // 1. 재고 데이터 조회
-        Map<Long, Stock> stockMap = createStockMapBy(purchases);
+        Stock stock = stockRepository.findByProductId(productId);
 
         // 2. 재고 차감
-        for (ProductPurchase purchase : purchases) {
-            Stock stock = stockMap.get(purchase.getProductId());
-            int quantity = purchase.getQuantity();
-
-            if (stock.isQuantityLessThan(quantity)) {
-                throw new StockInsufficientException("재고가 부족한 상품 ID: " + purchase.getProductId());
-            }
-
-            stock.deductQuantity(quantity);
-        }
+        deductQuantity(productId, quantity, stock);
     }
 
-    private Map<Long, Stock> createStockMapBy(List<ProductPurchase> purchases) {
-        List<Long> productIds = purchases.stream()
-                                         .map(ProductPurchase::getProductId)
-                                         .collect(Collectors.toList());
-        List<Stock> stocks = stockRepository.findAllByProductIdIn(productIds);
+    @Transactional
+    protected void deductQuantity(long productId, int quantity, Stock stock) {
+        if (stock.isQuantityLessThan(quantity)) {
+            throw new StockInsufficientException("재고가 부족한 상품 ID: " + productId);
+        }
 
-        return stocks.stream()
-                     .collect(Collectors.toMap(Stock::getId, s -> s));
+        stock.deductQuantity(quantity);
+    }
+
+    @Transactional(readOnly = true)
+    public List<StockResponse> findAll() {
+        return stockRepository.findAll()
+                              .stream()
+                              .map(StockResponse::of)
+                              .toList();
     }
 }

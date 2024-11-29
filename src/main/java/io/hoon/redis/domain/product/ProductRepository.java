@@ -7,6 +7,6 @@ import java.util.List;
 
 @Repository
 public interface ProductRepository extends CrudRepository<Product, Long> {
-    List<Product> findAllByIdIn(List<Long> productIds);
+    List<Product> findAllByIdInAndStatus(List<Long> productIds, ProductStatus status);
 
 }

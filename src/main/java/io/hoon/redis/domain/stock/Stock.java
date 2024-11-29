@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(name = "stocks")
 @Entity
 public class Stock {
 

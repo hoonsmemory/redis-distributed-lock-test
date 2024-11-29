@@ -8,9 +8,21 @@ spring:
     username: sa
     password:
 
+    hikari:
+      maximum-pool-size: 200    # 최대 커넥션 수
+      minimum-idle: 100         # 유휴 커넥션 수
+      idle-timeout: 10000       # 유휴 커넥션이 닫히기까지의 시간(ms)
+      max-lifetime: 1800000     # 커넥션의 최대 생명 주기(ms)
+      connection-timeout: 30000 # 커넥션 요청 대기 시간(ms)
+
   jpa:
     hibernate:
       ddl-auto: none
+
+  data:
+      redis:
+        host: localhost
+        port: 6379
 ---
 spring:
   config:

@@ -5,9 +5,10 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Entity
 @Getter
 @NoArgsConstructor
+@Table(name = "products")
+@Entity
 public class Product {
 
     @Id
