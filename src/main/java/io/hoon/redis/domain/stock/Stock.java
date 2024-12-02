@@ -1,12 +1,15 @@
 package io.hoon.redis.domain.stock;
 
+import io.hoon.redis.api.service.stock.exception.StockInsufficientException;
 import io.hoon.redis.domain.product.Product;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "stocks")
@@ -42,8 +45,12 @@ public class Stock {
 
     public void deductQuantity(int quantity) {
         if (isQuantityLessThan(quantity)) {
-            throw new IllegalArgumentException("차감할 재고 수량이 없습니다.");
+            throw new StockInsufficientException(String.format("상품 %d의 재고가 %d개 부족합니다.",
+                    this.id,
+                    quantity - this.quantity
+            ));
         }
+
         this.quantity -= quantity;
     }
 
